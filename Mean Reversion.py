@@ -38,26 +38,29 @@ def close_prices(ticker, days):
     return close_prices
 
 
-plt.figure(figsize=(10, 6)) # create plot figure
+##### VARIABLES #####
 
 ticker = 'AAPL'
-days = 365*3
+days = 300
+
+##### CALCULATIONS #####
 
 close_prices = close_prices(ticker, days+200)
 moving_averages_20 = calculate_moving_average(close_prices, 20)
+moving_averages_50 = calculate_moving_average(close_prices, 50)
 moving_averages_200 = calculate_moving_average(close_prices, 200)
-
+# formatting for plot
 close_prices = close_prices[199:]
 moving_averages_20 = moving_averages_20[180:]
+moving_averages_50 = moving_averages_50[150:]
 
-print(len(close_prices))
-print(len(moving_averages_20))
-print(len(moving_averages_200))
+##### PLOTTING #####
 
+plt.figure(figsize=(10, 6))
 plt.plot(close_prices, label='Closing Prices')
 plt.plot(moving_averages_20, label='SMA20')
+plt.plot(moving_averages_50, label='SMA50')
 plt.plot(moving_averages_200, label='SMA200')
-
 plt.xlabel('Period')
 plt.ylabel('Price')
 plt.title(f'Closing Prices and Moving Averages - {ticker}')
