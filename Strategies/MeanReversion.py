@@ -1,4 +1,7 @@
-### Mean reversion trading 
+### Mean Reversion Trading Algorithm
+import sys
+sys.path.append("..")
+
 import numpy as np
 import matplotlib.pyplot as plt
 import Stockdata
