@@ -1,4 +1,11 @@
 ### Mean Reversion Trading Algorithm
+
+####### Strategy Theory
+
+# Augmented Dicky-Fuller Test (ADF) - test for stationarity (if statistical properties do not vary with time)
+
+
+
 import sys
 sys.path.append("..")
 

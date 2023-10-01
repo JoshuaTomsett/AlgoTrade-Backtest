@@ -1,5 +1,7 @@
 # Trend Trading Algorithm
 
+####### Strategy Theory
+
 # use previous trends to try and predict future behaviour
 
 
