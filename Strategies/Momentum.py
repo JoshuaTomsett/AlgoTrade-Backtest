@@ -7,3 +7,9 @@ import sys
 sys.path.append("..")
 
 import Stockdata
+
+
+
+
+def Momentum(ticker, time_frame):
+    pass

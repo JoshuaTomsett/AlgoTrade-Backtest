@@ -7,3 +7,9 @@ import sys
 sys.path.append("..")
 
 import Stockdata
+
+
+
+
+def Trend(ticker, time_frame):
+    pass

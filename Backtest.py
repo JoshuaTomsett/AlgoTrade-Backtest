@@ -11,7 +11,7 @@
 #   - Trend Following
 
 
-
+# time_series = Trading Algorithm (ticker, time_frame)
 
 def backtest(time_series, ticker):
 
