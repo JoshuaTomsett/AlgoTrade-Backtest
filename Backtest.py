@@ -9,6 +9,7 @@
 #   - Mean Reversion
 #   - Momentum Trading
 #   - Trend Following
+#   - Random Trading (for analysis reasons)
 
 
 # time_series = Trading Algorithm (ticker, time_frame)
