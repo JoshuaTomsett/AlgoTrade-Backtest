@@ -4,6 +4,11 @@
 
 # IDEA - use linear regression to determine up trend, and max point (using shorter timeframe)
 
+# buy when angle above 30 degress (for example)
+
+# sell when angle is cloe to zero (e.g: between 5 < angle <= -5)
+
+# tweak the angles to find opptimal performance, both with in and out of sample testing
 
 
 
@@ -13,6 +18,7 @@ sys.path.append("..")
 
 import Stockdata
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def calcRegressionLine(x, y):
@@ -39,9 +45,56 @@ def calcRegressionLine(x, y):
 
     return a,b
 
+            ## XXXXXXXXXXXXXXXXX ##
+
+# ticker = 'TSLA'
+# days = 8
+# data = Stockdata.get_data_days(ticker, days)
+# x = []
+# for i in data:
+#     x.append(i)
+
+# y = list(range(1, len(x)+1))
+
+# a,b = calcRegressionLine(x, y)
+
+# colour = ''
+# if a > 0 : colour = 'green'
+# else: colour = 'red'
+
+# # Plot the data and the regression line
+# plt.plot(y, x, 'o')
+# plt.plot(y, x)
+# plt.plot([a*i + b for i in x], x, '-', color = colour)
+# plt.show()
+
+
+def calcAngleList(ticker, days, time_frame):
+
+    def calcAngle(a): # a = gradient
+        return np.rad2deg(np.arctan(a))
+
+
+    angles = []
+
+    data = Stockdata.get_data_days(ticker, time_frame)
+
+    prices = []
+    for i in data:
+        prices.append(i)
+
+    for i in range(len(prices)-days):
+        x = prices[i:i+days]
+        y = list(range(1, 11))
+        a, b = calcRegressionLine(x,y)
+        angles.append(calcAngle(a))
+    
+    return angles
+
+
 
 ticker = 'TSLA'
-days = 20
+days = 100
 data = Stockdata.get_data_days(ticker, days)
 x = []
 for i in data:
@@ -49,19 +102,29 @@ for i in data:
 
 y = list(range(1, len(x)+1))
 
-a,b = calcRegressionLine(x, y)
+angles = calcAngleList('TSLA', 10, 100)
 
-colour = ''
-if a > 0 : colour = 'green'
-else: colour = 'red'
+buy = []
+sell = []
+mode = 'Buy'
 
-# Plot the data and the regression line
-plt.plot(y, x, 'o')
+for i in angles:
+    if i > -2 and i < 2 and mode == 'Buy':
+        buy.append(angles.index(i)+1)
+        mode = 'Sell'
+    
+    elif i > -2 and i < 2 and mode == 'Sell':
+        sell.append(angles.index(i)+1)
+        mode = 'Buy'
+
+for index, value in enumerate(angles):
+    print(index+1, value)
+
+
+plt.vlines(buy, ymin=min(x), ymax=max(x), color='green')
+plt.vlines(sell, ymin=min(x), ymax=max(x), color='red')
 plt.plot(y, x)
-plt.plot([a*i + b for i in x], x, '-', color = colour)
 plt.show()
-
-
 
 
 
