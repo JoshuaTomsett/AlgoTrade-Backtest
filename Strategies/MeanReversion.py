@@ -65,11 +65,23 @@ close_prices = close_prices[199:]
 moving_averages_50 = moving_averages_50[150:]
 
 
+##### TEST FOR STATIONARITY #####
 
+def is_stationary(close_prices):
+  """Performs an ADF test on a list of close prices and returns True if it is stationary.
 
+  Args:
+    close_prices: A list of close prices for a stock.
 
+  Returns:
+    True if the stock prices are stationary, False otherwise.
+  """
 
+  # If the p-value < significance level, reject the null hypothesis and conclude that the series is not stationary.
+  if adfuller(close_prices)[1] < 0.05: return False
 
+  # Otherwise, we fail to reject the null hypothesis and conclude that the series is stationary.
+  else: return True
 
 
 ##### PLOTTING #####

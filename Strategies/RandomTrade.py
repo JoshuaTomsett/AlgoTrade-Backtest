@@ -58,4 +58,4 @@ def RandomTrade(ticker, days):
 
 
 
-RandomTrade('TSLA', 500)
+RandomTrade('TSLA', 200)
