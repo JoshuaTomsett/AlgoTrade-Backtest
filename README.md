@@ -14,3 +14,4 @@ RESULTS
 - pandas
 - numpy
 - matplotlib
+- statsmodels
