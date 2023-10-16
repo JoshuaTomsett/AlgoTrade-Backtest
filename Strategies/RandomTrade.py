@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 def RandomTrade(ticker, days):
     
     data = Stockdata.get_data_days(ticker, days)
-    x = []
+    x = [] # price series
     for i in data:
         x.append(i)
 

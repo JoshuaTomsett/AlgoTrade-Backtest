@@ -2,7 +2,7 @@
 
 ####### Strategy Theory
 
-# Bollinger lines
+# Bollinger lines (+- some x * std, on SMA20)
 # Buy -> lower bound
 # Sell -> Upper bound
 
@@ -50,36 +50,88 @@ def close_prices(ticker, days):
     return close_prices
 
 
+def MeanReversion(close_prices, sma_trade, lower_bollinger, upper_bollinger):
+
+    buy = []
+    sell = []
+    length = len(close_prices)
+
+    smaPosition = 'Below'   ### Hardcode Hack ###
+
+    for i in range(0, length):
+        
+        if smaPosition == 'Above':
+            if sma_trade[i] < upper_bollinger[i]:
+                smaPosition = 'Between'
+
+        elif smaPosition == 'Between':
+
+            if sma_trade[i] > upper_bollinger[i]:
+                smaPosition = 'Above'
+                if len(buy) > len(sell):
+                    sell.append(i)
+            
+            if sma_trade[i] < lower_bollinger[i]:
+                smaPosition = 'Below'
+                if len(buy) == len(sell):
+                    buy.append(i)
+
+        elif smaPosition == 'Below':
+            if sma_trade[i] > lower_bollinger[i]:
+                smaPosition = 'Between'
+
+    return buy, sell
+
+
 ##### VARIABLES #####
 
 ticker = 'AAPL'
-days = 2000 / 5 * 7
+days = 500 / 5 * 7
+
+# Optimization
+SMABollinger = 20
+SMATrade = 200
+stdMult = 1
 
 ##### CALCULATIONS #####
 
 # create moving average lists
 close_prices = close_prices(ticker, days+200)
-moving_averages_20 = calculate_moving_average(close_prices, 20)
-moving_averages_50 = calculate_moving_average(close_prices, 50)
-moving_averages_200 = calculate_moving_average(close_prices, 200)
 
-# formatting for plot
-close_prices = close_prices[199:]
-moving_averages_20 = moving_averages_20[180:]
-moving_averages_50 = moving_averages_50[150:]
+sma_bollinger = calculate_moving_average(close_prices, SMABollinger)
+sma_trade = calculate_moving_average(close_prices, SMATrade)
+
+# formatting for plot - so that they all start at the same point (where the SMA Trade starts)
+close_prices = close_prices[SMATrade-1:]
+sma_bollinger = sma_bollinger[SMATrade - SMABollinger:]
+
+# Bollinger Bands
+std = np.std(sma_bollinger)
+lower_bollinger = [element - stdMult * std for element in sma_bollinger]
+upper_bollinger = [element + stdMult * std for element in sma_bollinger]
+
+
+buy, sell = MeanReversion(close_prices, sma_trade, lower_bollinger, upper_bollinger)
 
 
 ##### PLOTTING #####
 
-# plt.figure(figsize=(10, 6))
-# plt.plot(close_prices, label='Closing Prices')
-# plt.plot(moving_averages_20, label='SMA20')
-# plt.plot(moving_averages_50, label='SMA50')
-# plt.plot(moving_averages_200, label='SMA200')
-# plt.xlabel('Period')
-# plt.ylabel('Price')
-# plt.title(f'Closing Prices and Moving Averages - {ticker}')
-# plt.legend()
-# plt.grid(True)
-# plt.show()
+plt.figure(figsize=(10, 6))
 
+# plt.plot(close_prices, label='Closing Prices')
+
+plt.plot(sma_bollinger, label=f'SMA {SMABollinger}', color='orange')
+plt.plot(sma_trade, label=f'SMA {SMATrade}', color='red')
+
+plt.plot(lower_bollinger, color='blue')
+plt.plot(upper_bollinger, color='blue')
+
+plt.vlines(buy, ymin=min(close_prices), ymax=max(close_prices), color='green')
+plt.vlines(sell, ymin=min(close_prices), ymax=max(close_prices), color='red')
+
+plt.xlabel('Period')
+plt.ylabel('Price')
+plt.title(f'Closing Prices and Moving Averages - {ticker}')
+plt.legend()
+plt.grid(True)
+plt.show()

@@ -11,8 +11,9 @@
 #   - Trend Following
 #   - Random Trading (for analysis reasons)
 
-
 # time_series = Trading Algorithm (ticker, time_frame)
+
+
 
 def backtest(time_series, ticker):
 
@@ -23,3 +24,25 @@ def backtest(time_series, ticker):
     # for price in data:
 
     pass
+
+
+
+
+
+
+###############################################################
+##########################  TO DO  ############################
+###############################################################
+
+# Strategies
+#   - Mean Reversion
+#   - Momentum Trading
+#   - Trend Following
+
+# Optimization
+#   - Optimize function for each strategy
+#   - Optimize for both - in sample / out of sample
+#   - OPtimize for every stock and trade using optimal for each ticker
+#        - store all optimal values in csv (ticker, value1, value2, ...)
+
+
