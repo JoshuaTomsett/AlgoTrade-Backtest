@@ -52,41 +52,50 @@ def close_prices(ticker, days):
 
 def MeanReversion(sma_trade, lower_bollinger, upper_bollinger):
 
+    """Generates buy / sell lists containing index(s) of when to buy or sell (index of time series list) 
+
+    Returns:
+        (List, List): Two lists (buy / sell)
+    """
+
     buy = []
     sell = []
-    length = len(sma_trade)
+    active = False # True if algo has a position
 
-    smaPosition = 'Below'   ### Hardcode Hack ###
+    if sma_trade[0] > upper_bollinger[0]: smaPosition = 'Above'
+    elif sma_trade[0] < lower_bollinger[0]: smaPosition = 'Below'
+    else: smaPosition = 'Between'
 
-    for i in range(0, length):
+    for i in range(0, len(sma_trade)):
         
         if smaPosition == 'Above':
-            if sma_trade[i] < upper_bollinger[i]:
+            if sma_trade[i] < upper_bollinger[i]: # ABOVE -> MIDDLE (SELL)
                 smaPosition = 'Between'
+                if active:
+                    sell.append(i)
+                    active = False
 
         elif smaPosition == 'Between':
 
             if sma_trade[i] > upper_bollinger[i]:
                 smaPosition = 'Above'
-                if len(buy) > len(sell):
-                    sell.append(i)
             
             if sma_trade[i] < lower_bollinger[i]:
                 smaPosition = 'Below'
-                if len(buy) == len(sell):
-                    buy.append(i)
 
         elif smaPosition == 'Below':
-            if sma_trade[i] > lower_bollinger[i]:
+            if sma_trade[i] > lower_bollinger[i]: # BELOW -> MIDDLE (BUY)
                 smaPosition = 'Between'
+                buy.append(i)
+                active = True
 
     return buy, sell
 
 
 ##### VARIABLES #####
 
-ticker = 'TSLA'
-days = 2000 / 5 * 7
+ticker = 'AMZN'
+days = 1000 / 5 * 7
 
 # Optimization
 SMABollinger = 200
@@ -119,10 +128,9 @@ buy, sell = MeanReversion(sma_trade, lower_bollinger, upper_bollinger)
 plt.figure(figsize=(10, 6))
 
 # plt.plot(close_prices, label='Closing Prices')
-
 # plt.plot(sma_bollinger, label=f'SMA {SMABollinger}', color='orange')
-plt.plot(sma_trade, label=f'SMA {SMATrade}')
 
+plt.plot(sma_trade, label=f'SMA {SMATrade}', color='orange') # The lower SMA (e.g: SMA20)
 plt.plot(lower_bollinger, color='blue')
 plt.plot(upper_bollinger, color='blue')
 
